@@ -1,0 +1,1 @@
+2023-07-20 20:35:16.7257|0|ERROR|BudgetAPI.Middleware.RequestTimeMiddleware|Request Method GET at /swagger/index.html took 12637  milliseconds |url: https://localhost/swagger/index.html|action: 
