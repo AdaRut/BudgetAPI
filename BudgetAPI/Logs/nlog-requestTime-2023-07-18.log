@@ -1,1 +1,0 @@
-2023-07-18 22:59:41.5325|ERROR|BudgetAPI.Middleware.RequestTimeMiddleware|Request Method GET at /api/budget took 8742  milliseconds

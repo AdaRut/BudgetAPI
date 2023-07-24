@@ -1,4 +1,0 @@
-2023-07-18 22:59:10.2583|0|INFO|Microsoft.Hosting.Lifetime|Application started. Press Ctrl+C to shut down. |url: |action: 
-2023-07-18 22:59:10.2666|0|INFO|Microsoft.Hosting.Lifetime|Hosting environment: Development |url: |action: 
-2023-07-18 22:59:10.2666|0|INFO|Microsoft.Hosting.Lifetime|Content root path: C:\Users\Adam\Desktop\Programowanie\BudgetAPI\BudgetAPI\ |url: |action: 
-2023-07-18 22:59:41.5325|0|ERROR|BudgetAPI.Middleware.RequestTimeMiddleware|Request Method GET at /api/budget took 8742  milliseconds |url: https://localhost/api/budget|action: GetAll

@@ -1,1 +1,0 @@
-2023-07-23 15:44:49.4863|ERROR|BudgetAPI.Middleware.RequestTimeMiddleware|Request Method GET at /swagger/v1/swagger.json took 19562  milliseconds
