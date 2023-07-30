@@ -7,9 +7,11 @@ using BudgetAPI.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
+using System.Text;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
@@ -25,6 +27,32 @@ try
     builder.Host.UseNLog();
 
     // Add services to the container.
+
+    var authenticationSettings = new AuthenticationSettings();
+    builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+    builder.Services.AddSingleton(authenticationSettings);
+
+    builder.Services.AddAuthentication(option =>
+    {
+        option.DefaultAuthenticateScheme = "Bearer";
+        option.DefaultScheme = "Bearer";
+        option.DefaultChallengeScheme = "Bearer";
+    }).AddJwtBearer(cfg =>
+    {
+        cfg.RequireHttpsMetadata = false;
+        cfg.SaveToken = true;
+        cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidIssuer = authenticationSettings.JwtIssuer,
+            ValidAudience = authenticationSettings.JwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
+
+        };
+    });
+    builder.Services.AddAuthorization(option =>
+    {
+        option.AddPolicy("HasUsernameADMIN123", builder =>  builder.RequireClaim("Username", "ADMIN123")  );
+    });
 
     builder.Services.AddControllers().AddFluentValidation();
     builder.Services.AddDbContext<BudgetDbContext>();
@@ -47,7 +75,7 @@ try
     // Configure the HTTP request pipeline.
     app.UseMiddleware<ErrorHandlingMiddleware>();
     app.UseMiddleware<RequestTimeMiddleware>();
-
+    app.UseAuthentication();
     app.UseHttpsRedirection();
     app.UseSwagger();
     app.UseSwaggerUI(c =>

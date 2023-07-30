@@ -21,6 +21,11 @@ namespace BudgetAPI.Middleware
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsync(nfex.Message);
 
+            } catch (BadRequestException brex)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync(brex.Message);
+
             } catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
