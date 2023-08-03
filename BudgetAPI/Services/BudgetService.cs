@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using BudgetAPI.Authorization;
 using BudgetAPI.Entities;
 using BudgetAPI.Exceptions;
 using BudgetAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BudgetAPI.Services
 {
@@ -21,13 +24,21 @@ namespace BudgetAPI.Services
         private readonly BudgetDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public BudgetService(BudgetDbContext _dbContext, IMapper mapper, ILogger<BudgetService> logger)
+        public BudgetService(
+            BudgetDbContext _dbContext,
+            IMapper mapper,
+            ILogger<BudgetService> logger,
+            IAuthorizationService authorizationService,
+            IUserContextService userContextService)
         {
             this._dbContext = _dbContext;
             this._mapper = mapper;
             this._logger = logger;
-
+            this._authorizationService = authorizationService;
+            this._userContextService = userContextService;
         }
 
         public BudgetDto GetById(int id)
@@ -59,6 +70,7 @@ namespace BudgetAPI.Services
         public int Create(CreateBudgetDto createBudgetDto)
         {
             var budget = _mapper.Map<Budget>(createBudgetDto);
+            budget.UserId = (int)_userContextService.GetUserId;
             _dbContext.Budgets.Add(budget);
             _dbContext.SaveChanges();
             return budget.Id;
@@ -73,6 +85,14 @@ namespace BudgetAPI.Services
             if (budget is null)
                 throw new NotFoundException("Budget not found!");
 
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, budget, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbiddenException("You can't delete this budget!");
+            }
+
+
             this._dbContext.Budgets.Remove(budget);
             _dbContext.SaveChanges();
         }
@@ -84,6 +104,13 @@ namespace BudgetAPI.Services
 
             if (budget is null)
                 throw new NotFoundException("Budget not found!");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, budget, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if(!authorizationResult.Succeeded)
+            {
+                throw new ForbiddenException("You can't update this budget!");
+            }
 
             budget.Name = updateBudgetDto.Name;
             budget.Description= updateBudgetDto.Description;

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BudgetAPI.Controllers
 {
@@ -21,6 +22,7 @@ namespace BudgetAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Minimum2RestaurantsCreated")]
         public ActionResult<IEnumerable<BudgetDto>> GetAll()
         {
             
@@ -38,8 +40,8 @@ namespace BudgetAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Policy = "HasUsernameADMIN123")]
+       // [Authorize(Roles = "Admin")]
+       // [Authorize(Policy = "HasUsernameADMIN123")]
         public ActionResult CreateBudget([FromBody]CreateBudgetDto budgetDto)
         {
             var id = this.budgetService.Create(budgetDto);
@@ -47,6 +49,7 @@ namespace BudgetAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AtLeast18Years")]
         public ActionResult Delete([FromRoute] int id) 
         { 
             this.budgetService.Delete(id);

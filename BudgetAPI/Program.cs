@@ -1,4 +1,5 @@
 using BudgetAPI;
+using BudgetAPI.Authorization;
 using BudgetAPI.Entities;
 using BudgetAPI.Middleware;
 using BudgetAPI.Models;
@@ -6,6 +7,7 @@ using BudgetAPI.Models.Validators;
 using BudgetAPI.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -52,8 +54,13 @@ try
     builder.Services.AddAuthorization(option =>
     {
         option.AddPolicy("HasUsernameADMIN123", builder =>  builder.RequireClaim("Username", "ADMIN123")  );
+        option.AddPolicy("AtLeast18Years", builder => builder.AddRequirements(new MinimumAgeRequirement(18)));
+        option.AddPolicy("Minimum2RestaurantsCreated", builder => builder.AddRequirements(new MinimumAddedRestaurantsRequirement(2)));
     });
 
+    builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+    builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+    builder.Services.AddScoped<IAuthorizationHandler, MinimumAddedRestaurantsRequirementHandler>();
     builder.Services.AddControllers().AddFluentValidation();
     builder.Services.AddDbContext<BudgetDbContext>();
     builder.Services.AddScoped<BudgerSeeder>();
@@ -65,6 +72,8 @@ try
     builder.Services.AddScoped<RequestTimeMiddleware>();
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
     builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+    builder.Services.AddScoped<IUserContextService, UserContextService>();
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
