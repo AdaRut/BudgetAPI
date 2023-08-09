@@ -1,4 +1,5 @@
 ﻿using BudgetAPI.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetAPI
 {
@@ -15,6 +16,11 @@ namespace BudgetAPI
         {
             if (budgetDbContext.Database.CanConnect())
             {
+                var pendingMigrations = budgetDbContext.Database.GetPendingMigrations();
+                if(pendingMigrations != null && pendingMigrations.Any())
+                {
+                    budgetDbContext.Database.Migrate();
+                }
                 if (!budgetDbContext.Roles.Any())
                 {
                     var roles = GetRoles();

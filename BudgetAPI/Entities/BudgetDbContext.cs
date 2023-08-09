@@ -4,8 +4,9 @@ namespace BudgetAPI.Entities
 {
     public class BudgetDbContext : DbContext
     {
-        private string _connectionString =
-            "Server=(localdb)\\mssqllocaldb;Database=BudgetDb;Trusted_Connection=true;";
+        public BudgetDbContext(DbContextOptions<BudgetDbContext> options) : base(options) { }
+       
+
         public DbSet<User> Users { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -33,12 +34,6 @@ namespace BudgetAPI.Entities
            // Seedowanie danych
            // modelBuilder.Entity<Budget>()
            //     .HasData()
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-            base.OnConfiguring(optionsBuilder);
         }
     }
 }

@@ -22,11 +22,11 @@ namespace BudgetAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "Minimum2RestaurantsCreated")]
-        public ActionResult<IEnumerable<BudgetDto>> GetAll()
+        //[Authorize(Policy = "Minimum2RestaurantsCreated")]
+        public ActionResult<PagedResult<BudgetDto>> GetAll([FromQuery] BudgetQuery query)
         {
             
-            var budgetsDtos = budgetService.GetAll();
+            var budgetsDtos = budgetService.GetAll(query);
             return Ok(budgetsDtos);
         }
 

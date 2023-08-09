@@ -5,6 +5,7 @@ using BudgetAPI.Exceptions;
 using BudgetAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace BudgetAPI.Services
@@ -12,7 +13,7 @@ namespace BudgetAPI.Services
     public interface IBudgetService
     {
         BudgetDto GetById(int id);
-        IEnumerable<BudgetDto> GetAll();
+        PagedResult<BudgetDto> GetAll(BudgetQuery budgetQuery);
         int Create(CreateBudgetDto createBudgetDto);
         void Delete(int id);
         void Update(int id, UpdateBudgetDto modifyBudgetDto);
@@ -56,15 +57,40 @@ namespace BudgetAPI.Services
 
         }
 
-        public IEnumerable<BudgetDto> GetAll()
+        public PagedResult<BudgetDto> GetAll(BudgetQuery budgetQuery)
         {
-            var budgets = this._dbContext.Budgets
+            var baseQuery = this._dbContext.Budgets
                 .Include(r => r.Groupes)
                 .ThenInclude(r => r.GroupItems)
+                .Where(r => budgetQuery.SearchPhrase == null ||
+                (r.Name.ToLower().Contains(budgetQuery.SearchPhrase.ToLower())
+                    || r.Description.ToLower().Contains(budgetQuery.SearchPhrase.ToLower())));
+
+            if(!string.IsNullOrEmpty(budgetQuery.SortBy))
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<Budget, object>>>()
+                {
+                    { nameof(Budget.Name), r => r.Name },
+                    { nameof(Budget.Description), r => r.Description },
+                };
+
+                var selectedColumn = columnsSelector[budgetQuery.SortBy];
+
+                baseQuery = budgetQuery.SortDirection == SortDirection.ASC 
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var budgets = baseQuery
+                .Skip((budgetQuery.PageNumber - 1) * budgetQuery.PageSize)
+                .Take(budgetQuery.PageSize)
                 .ToList();
+                
 
             var budgetsDtos = _mapper.Map<List<BudgetDto>>(budgets);
-            return budgetsDtos;
+
+            var pagedResult = new PagedResult<BudgetDto>(budgetsDtos, baseQuery.Count(), budgetQuery.PageSize, budgetQuery.PageNumber);
+            return pagedResult;
         }
 
         public int Create(CreateBudgetDto createBudgetDto)

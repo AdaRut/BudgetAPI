@@ -9,6 +9,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
@@ -62,7 +63,11 @@ try
     builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
     builder.Services.AddScoped<IAuthorizationHandler, MinimumAddedRestaurantsRequirementHandler>();
     builder.Services.AddControllers().AddFluentValidation();
-    builder.Services.AddDbContext<BudgetDbContext>();
+
+    builder.Services.AddDbContext<BudgetDbContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("BudgetDbConnection"));
+    });
     builder.Services.AddScoped<BudgerSeeder>();
     builder.Services.AddScoped<IBudgetService, BudgetService>();
     builder.Services.AddScoped<IGroupService, GroupService>();
@@ -72,11 +77,26 @@ try
     builder.Services.AddScoped<RequestTimeMiddleware>();
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
     builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+    builder.Services.AddScoped<IValidator<BudgetQuery>, BudgetQueryValidator>();
     builder.Services.AddScoped<IUserContextService, UserContextService>();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen();
 
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("FrontendApp", policyBuilder =>
+        {
+            policyBuilder.AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithOrigins(builder.Configuration["AllowedOrigins"]);
+        });
+    });
+
     var app = builder.Build();
+
+    app.UseResponseCaching();
+    app.UseStaticFiles();
+    app.UseCors("FrontendApp");
 
     var seeder = builder.Services.BuildServiceProvider().GetService<BudgerSeeder>();
     seeder.SeedData();
