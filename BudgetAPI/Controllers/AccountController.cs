@@ -12,7 +12,7 @@ namespace BudgetAPI.Controllers
         private readonly IAccountService _accountService;
         public AccountController(IAccountService accountService)
         {
-            _accountService= accountService
+            _accountService= accountServic
         }
 
         [HttpPost("register")]
