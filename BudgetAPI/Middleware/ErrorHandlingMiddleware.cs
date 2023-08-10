@@ -16,10 +16,20 @@ namespace BudgetAPI.Middleware
             try
             {
                 await next.Invoke(context);
+            } catch (ForbiddenException fe)
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsync(fe.Message);
+
             } catch (NotFoundException nfex)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsync(nfex.Message);
+
+            } catch (BadRequestException brex)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync(brex.Message);
 
             } catch(Exception ex)
             {

@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
+using BudgetAPI.Authorization;
 using BudgetAPI.Entities;
 using BudgetAPI.Exceptions;
 using BudgetAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Security.Claims;
 
 namespace BudgetAPI.Services
 {
     public interface IBudgetService
     {
         BudgetDto GetById(int id);
-        IEnumerable<BudgetDto> GetAll();
+        PagedResult<BudgetDto> GetAll(BudgetQuery budgetQuery);
         int Create(CreateBudgetDto createBudgetDto);
         void Delete(int id);
         void Update(int id, UpdateBudgetDto modifyBudgetDto);
@@ -21,13 +25,21 @@ namespace BudgetAPI.Services
         private readonly BudgetDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public BudgetService(BudgetDbContext _dbContext, IMapper mapper, ILogger<BudgetService> logger)
+        public BudgetService(
+            BudgetDbContext _dbContext,
+            IMapper mapper,
+            ILogger<BudgetService> logger,
+            IAuthorizationService authorizationService,
+            IUserContextService userContextService)
         {
             this._dbContext = _dbContext;
             this._mapper = mapper;
             this._logger = logger;
-
+            this._authorizationService = authorizationService;
+            this._userContextService = userContextService;
         }
 
         public BudgetDto GetById(int id)
@@ -45,20 +57,46 @@ namespace BudgetAPI.Services
 
         }
 
-        public IEnumerable<BudgetDto> GetAll()
+        public PagedResult<BudgetDto> GetAll(BudgetQuery budgetQuery)
         {
-            var budgets = this._dbContext.Budgets
+            var baseQuery = this._dbContext.Budgets
                 .Include(r => r.Groupes)
                 .ThenInclude(r => r.GroupItems)
+                .Where(r => budgetQuery.SearchPhrase == null ||
+                (r.Name.ToLower().Contains(budgetQuery.SearchPhrase.ToLower())
+                    || r.Description.ToLower().Contains(budgetQuery.SearchPhrase.ToLower())));
+
+            if(!string.IsNullOrEmpty(budgetQuery.SortBy))
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<Budget, object>>>()
+                {
+                    { nameof(Budget.Name), r => r.Name },
+                    { nameof(Budget.Description), r => r.Description },
+                };
+
+                var selectedColumn = columnsSelector[budgetQuery.SortBy];
+
+                baseQuery = budgetQuery.SortDirection == SortDirection.ASC 
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var budgets = baseQuery
+                .Skip((budgetQuery.PageNumber - 1) * budgetQuery.PageSize)
+                .Take(budgetQuery.PageSize)
                 .ToList();
+                
 
             var budgetsDtos = _mapper.Map<List<BudgetDto>>(budgets);
-            return budgetsDtos;
+
+            var pagedResult = new PagedResult<BudgetDto>(budgetsDtos, baseQuery.Count(), budgetQuery.PageSize, budgetQuery.PageNumber);
+            return pagedResult;
         }
 
         public int Create(CreateBudgetDto createBudgetDto)
         {
             var budget = _mapper.Map<Budget>(createBudgetDto);
+            budget.UserId = (int)_userContextService.GetUserId;
             _dbContext.Budgets.Add(budget);
             _dbContext.SaveChanges();
             return budget.Id;
@@ -73,6 +111,14 @@ namespace BudgetAPI.Services
             if (budget is null)
                 throw new NotFoundException("Budget not found!");
 
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, budget, new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbiddenException("You can't delete this budget!");
+            }
+
+
             this._dbContext.Budgets.Remove(budget);
             _dbContext.SaveChanges();
         }
@@ -84,6 +130,13 @@ namespace BudgetAPI.Services
 
             if (budget is null)
                 throw new NotFoundException("Budget not found!");
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, budget, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if(!authorizationResult.Succeeded)
+            {
+                throw new ForbiddenException("You can't update this budget!");
+            }
 
             budget.Name = updateBudgetDto.Name;
             budget.Description= updateBudgetDto.Description;

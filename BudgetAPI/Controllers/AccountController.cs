@@ -21,5 +21,12 @@ namespace BudgetAPI.Controllers
             _accountService.RegisterUserDto(dto);
             return Ok();
         }
+
+        [HttpPost("login")]
+        public ActionResult Login([FromBody]LoginDto loginDto)
+        {
+            String token = _accountService.generateJwt(loginDto);
+            return Ok(token);
+        }
     }
 }
