@@ -24,6 +24,7 @@ jobs:
         with:
          name: api-artifact
          path: ${{ env.DOTNET_ROOT }}/api
+
         
   deploy-dev:
     runs-on: ubuntu-latest
@@ -42,6 +43,7 @@ jobs:
         with:
           app-name: 'budget-api-app'
           publish-profile: ${{ secrets.PUBLISH_PROFILE_DEV }}
+
 
   deploy-prod:
     runs-on: ubuntu-latest
