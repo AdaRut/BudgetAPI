@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BudgetAPI.Migrations
+namespace BudgetAPI.DAL.Migrations
 {
     public partial class InitAfterDemoliton : Migration
     {

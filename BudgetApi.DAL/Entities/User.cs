@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace BudgetAPI.Entities
+﻿namespace BudgetAPI.DAL.Entities
 {
     public class User
     {

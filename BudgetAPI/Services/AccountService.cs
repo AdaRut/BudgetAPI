@@ -1,4 +1,5 @@
-﻿using BudgetAPI.Entities;
+﻿using BudgetAPI.DAL;
+using BudgetAPI.DAL.Entities;
 using BudgetAPI.Exceptions;
 using BudgetAPI.Models;
 using Microsoft.AspNetCore.Identity;

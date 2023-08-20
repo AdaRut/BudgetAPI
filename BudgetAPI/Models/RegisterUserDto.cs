@@ -1,4 +1,4 @@
-﻿using BudgetAPI.Entities;
+﻿using BudgetAPI.DAL;
 using System.ComponentModel.DataAnnotations;
 
 namespace BudgetAPI.Models

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BudgetAPI.Migrations
+namespace BudgetAPI.DAL.Migrations
 {
     public partial class birthdayColumnImproved : Migration
     {

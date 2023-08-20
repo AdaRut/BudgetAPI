@@ -1,4 +1,4 @@
-﻿namespace BudgetAPI.Entities
+﻿namespace BudgetAPI.DAL.Entities
 {
     public class Group
     {

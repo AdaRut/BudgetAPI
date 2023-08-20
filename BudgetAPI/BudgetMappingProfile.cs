@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BudgetAPI.Entities;
+using BudgetAPI.DAL.Entities;
 using BudgetAPI.Models;
 
 namespace BudgetAPI

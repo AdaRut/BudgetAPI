@@ -1,4 +1,4 @@
-﻿using BudgetAPI.Entities;
+﻿using BudgetAPI.DAL;
 using FluentValidation;
 
 namespace BudgetAPI.Models.Validators

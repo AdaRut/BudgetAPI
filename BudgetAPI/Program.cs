@@ -1,6 +1,7 @@
 using BudgetAPI;
 using BudgetAPI.Authorization;
-using BudgetAPI.Entities;
+using BudgetAPI.DAL;
+using BudgetAPI.DAL.Entities;
 using BudgetAPI.Middleware;
 using BudgetAPI.Models;
 using BudgetAPI.Models.Validators;

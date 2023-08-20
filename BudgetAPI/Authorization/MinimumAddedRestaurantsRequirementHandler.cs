@@ -1,4 +1,5 @@
-﻿using BudgetAPI.Entities;
+﻿using BudgetAPI.Authorization;
+using BudgetAPI.DAL;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 

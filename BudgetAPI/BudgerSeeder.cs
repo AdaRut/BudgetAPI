@@ -1,4 +1,5 @@
-﻿using BudgetAPI.Entities;
+﻿using BudgetAPI.DAL;
+using BudgetAPI.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetAPI
