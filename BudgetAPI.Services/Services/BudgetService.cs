@@ -4,22 +4,17 @@ using BudgetAPI.DAL;
 using BudgetAPI.DAL.Entities;
 using BudgetAPI.Exceptions;
 using BudgetAPI.Models;
+using BudgetAPI.Services.Interfaces;
+using BudgetAPI.Services.Models.Budget;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Security.Claims;
 
 namespace BudgetAPI.Services
 {
-    public interface IBudgetService
-    {
-        BudgetDto GetById(int id);
-        PagedResult<BudgetDto> GetAll(BudgetQuery budgetQuery);
-        int Create(CreateBudgetDto createBudgetDto);
-        void Delete(int id);
-        void Update(int id, UpdateBudgetDto modifyBudgetDto);
 
-    }
 
     public class BudgetService : IBudgetService
     {
@@ -134,7 +129,7 @@ namespace BudgetAPI.Services
 
             var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, budget, new ResourceOperationRequirement(ResourceOperation.Update)).Result;
 
-            if(!authorizationResult.Succeeded)
+            if (!authorizationResult.Succeeded)
             {
                 throw new ForbiddenException("You can't update this budget!");
             }

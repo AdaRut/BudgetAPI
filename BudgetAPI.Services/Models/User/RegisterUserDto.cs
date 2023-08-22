@@ -1,7 +1,7 @@
 ﻿using BudgetAPI.DAL;
 using System.ComponentModel.DataAnnotations;
 
-namespace BudgetAPI.Models
+namespace BudgetAPI.Services.Models.User
 {
     public class RegisterUserDto
     {

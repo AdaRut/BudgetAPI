@@ -1,13 +1,14 @@
-﻿using BudgetAPI.DAL;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BudgetAPI.Models
+namespace BudgetAPI.Services.Models.Budget
 {
-    public class CreateBudgetDto
+    public class UpdateBudgetDto
     {
+
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
         public string Description { get; set; }
+
     }
 }

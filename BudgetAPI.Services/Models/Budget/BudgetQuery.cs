@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BudgetAPI.Models;
 using System.Security.Principal;
 
-namespace BudgetAPI.Models
+namespace BudgetAPI.Services.Models.Budget
 {
     public class BudgetQuery
     {

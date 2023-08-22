@@ -1,8 +1,9 @@
 ﻿using BudgetAPI.DAL.Entities;
+using BudgetAPI.Services.Models.Budget;
 using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 
-namespace BudgetAPI.Models.Validators
+namespace BudgetAPI.Services.Validators
 {
     public class BudgetQueryValidator : AbstractValidator<BudgetQuery>
     {

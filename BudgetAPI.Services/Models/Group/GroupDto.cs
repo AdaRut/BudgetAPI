@@ -1,6 +1,7 @@
 ﻿using BudgetAPI.DAL.Entities;
+using BudgetAPI.Services.Models.GroupItem;
 
-namespace BudgetAPI.Models
+namespace BudgetAPI.Services.Models.Group
 {
     public class GroupDto
     {

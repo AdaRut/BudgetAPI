@@ -1,7 +1,8 @@
 ﻿using BudgetAPI.DAL;
 using BudgetAPI.DAL.Entities;
 using BudgetAPI.Exceptions;
-using BudgetAPI.Models;
+using BudgetAPI.Services.Interfaces;
+using BudgetAPI.Services.Models.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,11 +12,6 @@ using System.Text;
 
 namespace BudgetAPI.Services
 {
-    public interface IAccountService
-    {
-        void RegisterUserDto(RegisterUserDto dto);
-        String generateJwt(LoginDto dto);
-    }
     public class AccountService : IAccountService
     {
         private readonly BudgetDbContext _dbContext;

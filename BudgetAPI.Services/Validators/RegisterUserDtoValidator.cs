@@ -1,11 +1,12 @@
 ﻿using BudgetAPI.DAL;
+using BudgetAPI.Services.Models.User;
 using FluentValidation;
 
-namespace BudgetAPI.Models.Validators
+namespace BudgetAPI.Services.Validators
 {
     public class RegisterUserDtoValidator : AbstractValidator<RegisterUserDto>
     {
-        
+
         public RegisterUserDtoValidator(BudgetDbContext dbContext)
         {
             RuleFor(x => x.Email)
@@ -20,9 +21,9 @@ namespace BudgetAPI.Models.Validators
 
             RuleFor(x => x.Email)
                 .Custom((value, context) =>
-                { 
+                {
                     var emailInUse = dbContext.Users.Any(u => u.Email == value);
-                    if(emailInUse)
+                    if (emailInUse)
                     {
                         context.AddFailure("Email", "That email is taken!");
                     }

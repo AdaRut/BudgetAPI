@@ -1,4 +1,4 @@
-﻿namespace BudgetAPI.Models
+﻿namespace BudgetAPI.Services.Models.GroupItem
 {
     public class GroupItemDto
     {

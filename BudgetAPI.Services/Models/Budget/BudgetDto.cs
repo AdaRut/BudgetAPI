@@ -1,6 +1,7 @@
 ﻿using BudgetAPI.DAL.Entities;
+using BudgetAPI.Services.Models.Group;
 
-namespace BudgetAPI.Models
+namespace BudgetAPI.Services.Models.Budget
 {
     public class BudgetDto
     {

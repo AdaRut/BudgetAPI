@@ -1,5 +1,7 @@
 ﻿using BudgetAPI.Models;
 using BudgetAPI.Services;
+using BudgetAPI.Services.Interfaces;
+using BudgetAPI.Services.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

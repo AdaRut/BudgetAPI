@@ -1,12 +1,9 @@
 ﻿using System.Security.Claims;
+using BudgetAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace BudgetAPI.Services
 {
-    public interface IUserContextService
-    {
-        ClaimsPrincipal User { get; }
-        int? GetUserId { get; }
-    }
 
     public class UserContextService : IUserContextService
     {

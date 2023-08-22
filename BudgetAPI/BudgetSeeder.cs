@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BudgetAPI
 {
-    public class BudgerSeeder
+    public class BudgetSeeder
     {
         private BudgetDbContext budgetDbContext;
 
-        public BudgerSeeder(BudgetDbContext budgetDbContext)
+        public BudgetSeeder(BudgetDbContext budgetDbContext)
         {
             this.budgetDbContext = budgetDbContext;
         }

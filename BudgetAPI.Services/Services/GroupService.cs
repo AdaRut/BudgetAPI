@@ -2,20 +2,12 @@
 using BudgetAPI.DAL;
 using BudgetAPI.DAL.Entities;
 using BudgetAPI.Exceptions;
-using BudgetAPI.Models;
+using BudgetAPI.Services.Interfaces;
+using BudgetAPI.Services.Models.Group;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetAPI.Services
 {
-    public interface IGroupService
-    {
-        int Create(int id, CreateGroupDto dto);
-
-        GroupDto GetById(int budgetId, int groupId);
-
-        List<GroupDto> GetAll(int budgetId);
-        void RemoveAll(int budgetId);
-    }
 
     public class GroupService : IGroupService
     {

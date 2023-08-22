@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetAPI.WebApi", "BudgetAPI\BudgetAPI.WebApi.csproj", "{A6841B87-C3AF-4057-8392-491F77797468}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetAPI.DAL", "BudgetApi.DAL\BudgetAPI.DAL.csproj", "{B69F9AC9-E27B-4757-A1DF-AB1AE152B1FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BudgetAPI.DAL", "BudgetApi.DAL\BudgetAPI.DAL.csproj", "{B69F9AC9-E27B-4757-A1DF-AB1AE152B1FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BudgetAPI.Services", "BudgetAPI.Services\BudgetAPI.Services.csproj", "{2F37FB73-093E-4917-B792-B394E7957530}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B69F9AC9-E27B-4757-A1DF-AB1AE152B1FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B69F9AC9-E27B-4757-A1DF-AB1AE152B1FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B69F9AC9-E27B-4757-A1DF-AB1AE152B1FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F37FB73-093E-4917-B792-B394E7957530}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F37FB73-093E-4917-B792-B394E7957530}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F37FB73-093E-4917-B792-B394E7957530}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F37FB73-093E-4917-B792-B394E7957530}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BudgetAPI.Models
+namespace BudgetAPI.Services.Models.Group
 {
     public class CreateGroupDto
     {

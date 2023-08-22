@@ -1,8 +1,8 @@
-﻿namespace BudgetAPI.Models
+﻿namespace BudgetAPI.Services.Models.User
 {
     public class LoginDto
     {
-        public String Email { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }
