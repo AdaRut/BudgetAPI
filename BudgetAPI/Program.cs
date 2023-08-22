@@ -1,12 +1,16 @@
+using AutoMapper;
 using BudgetAPI;
 using BudgetAPI.Authorization;
-using BudgetAPI.Entities;
+using BudgetAPI.DAL;
+using BudgetAPI.DAL.Entities;
 using BudgetAPI.Middleware;
-using BudgetAPI.Models;
-using BudgetAPI.Models.Validators;
 using BudgetAPI.Services;
+using BudgetAPI.Services.Interfaces;
+using BudgetAPI.Services.Mapper;
+using BudgetAPI.Services.Models.Budget;
+using BudgetAPI.Services.Models.User;
+using BudgetAPI.Services.Validators;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,25 +66,37 @@ try
     builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
     builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
     builder.Services.AddScoped<IAuthorizationHandler, MinimumAddedRestaurantsRequirementHandler>();
-    builder.Services.AddControllers().AddFluentValidation();
 
     builder.Services.AddDbContext<BudgetDbContext>(options =>
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("BudgetDbConnection"));
     });
-    builder.Services.AddScoped<BudgerSeeder>();
+    builder.Services.AddScoped<BudgetSeeder>();
     builder.Services.AddScoped<IBudgetService, BudgetService>();
     builder.Services.AddScoped<IGroupService, GroupService>();
     builder.Services.AddScoped<IAccountService, AccountService>();
-    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+    builder.Services.AddScoped<IUserContextService, UserContextService>();
+
+
+    builder.Services.AddSingleton<Profile, BudgetProfile>();
+    builder.Services.AddSingleton<Profile, GroupProfile>();
+    builder.Services.AddSingleton<Profile, GroupItemProfile>();
+    builder.Services.AddSingleton<AutoMapper.IConfigurationProvider, AutoMapperConfiguration>(p =>
+                    new AutoMapperConfiguration(p.GetServices<Profile>()))
+                    .AddSingleton<IMapper, Mapper>();
+
+
     builder.Services.AddScoped<ErrorHandlingMiddleware>();
     builder.Services.AddScoped<RequestTimeMiddleware>();
     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
     builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
     builder.Services.AddScoped<IValidator<BudgetQuery>, BudgetQueryValidator>();
-    builder.Services.AddScoped<IUserContextService, UserContextService>();
     builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddHealthChecks();
+    builder.Services.AddControllers();
+
 
     builder.Services.AddCors(options =>
     {
@@ -98,7 +114,7 @@ try
     app.UseStaticFiles();
     app.UseCors("FrontendApp");
 
-    var seeder = builder.Services.BuildServiceProvider().GetService<BudgerSeeder>();
+    var seeder = builder.Services.BuildServiceProvider().GetService<BudgetSeeder>();
     seeder.SeedData();
 
     // Configure the HTTP request pipeline.
