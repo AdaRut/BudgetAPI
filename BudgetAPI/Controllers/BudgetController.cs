@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
-using BudgetAPI.Entities;
+using BudgetAPI.DAL;
 using BudgetAPI.Models;
 using BudgetAPI.Services;
+using BudgetAPI.Services.Interfaces;
+using BudgetAPI.Services.Models.Budget;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +25,7 @@ namespace BudgetAPI.Controllers
 
         [HttpGet]
         //[Authorize(Policy = "Minimum2RestaurantsCreated")]
+        [AllowAnonymous]
         public ActionResult<PagedResult<BudgetDto>> GetAll([FromQuery] BudgetQuery query)
         {
             
